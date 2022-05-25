@@ -8,7 +8,7 @@ type Job struct {
 	Preference   string      `json:"preference,omitempty"`
 	HoursPerWeek string      `json:"hours_per_week,omitempty"`
 	WorkingPlace string      `json:"working_place,omitempty"`
-	Salary       string      `json:"salary,omitempty"`
+	Salary       Salary      `json:"salary,omitempty"`
 	Link         string      `json:"link,omitempty"`
 	City         CityEnum    `json:"city,omitempty"`
 	JobType      JobTypeEnum `json:"job_type,omitempty"`

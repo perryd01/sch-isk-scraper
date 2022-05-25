@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/forPelevin/gomoji"
 	"github.com/perryd01/sch-isk/pkg/model"
@@ -25,7 +26,7 @@ func ReadListing(html string, baseUrl string) ([]model.Job, error) {
 		city := model.CityEnum(split[1])
 		jobType := model.JobTypeEnum(split[2])
 
-		tmpjob := model.Job{
+		tmp := model.Job{
 			Name:         jobName,
 			Description:  shortDescription,
 			Code:         codeName[0],
@@ -33,12 +34,12 @@ func ReadListing(html string, baseUrl string) ([]model.Job, error) {
 			Preference:   "",
 			HoursPerWeek: "",
 			WorkingPlace: "",
-			Salary:       "",
+			Salary:       model.Salary{},
 			Link:         baseUrl + linkHref,
 			City:         city,
 			JobType:      jobType,
 		}
-		jobList = append(jobList, tmpjob)
+		jobList = append(jobList, tmp)
 	})
 	return jobList, nil
 }
@@ -49,5 +50,12 @@ func ReadOneJob(doc *goquery.Document, job *model.Job) {
 	job.Preference = doc.Find("#ad-details > div.row > div > span:nth-child(6)").Text()
 	job.HoursPerWeek = doc.Find("#ad-details > div.row > div > span:nth-child(8)").Text()
 	job.WorkingPlace = doc.Find("#ad-details > div.row > div > span:nth-child(10)").Text()
-	job.Salary = doc.Find("#ad-details > div.row > div > span:nth-child(12)").Text()
+	SalaryString := doc.Find("#ad-details > div.row > div > span:nth-child(12)").Text()
+	salary, err := pSalary(SalaryString)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err == nil {
+		job.Salary = *salary
+	}
 }
